@@ -22,14 +22,16 @@ const RoleShop = {
 class AccessService {
 	static signUp = async ({ name, email, password }) => {
         // try {
-        //Check email exist
+        //Check email exist start
         const hodelShop = await shopModel.findOne({ email }).lean();
         if (hodelShop) {
             throw new BadRequestError("Error: Shop already registered!");
         }
+        //Check email exist end
 
+        //Create shop start
         const passwordHash = await bcrypt.hash(password, 10); //hash voi do kho 10
-        //Create shop
+
         const newShop = await shopModel.create({
             name,
             email,
@@ -58,17 +60,18 @@ class AccessService {
                 userId: newShop._id,
                 publicKey
             });
+            console.log('publicKeyString', publicKeyString);
             if (!publicKeyString) {
                 return {
                     code: "xxx",
                     message: "Can not create key token",
                 };
             }
-            const publicKeyObject = crypto.createPublicKey(publicKeyString); //tao public key object
+            const publicKeyObject = crypto.createPublicKey(publicKeyString); 
             //Create token pair
             const tokens = await createTokenPair(
                 { userId: newShop._id, email },
-                publicKeyString,
+                publicKeyObject,
                 privateKey
             );
 

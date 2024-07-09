@@ -4,6 +4,7 @@ dbs : kết nối mongoose
 helpers : tương tự như utils nhưng khi nào cần sử dụng tời thì mới gọi
 package-lock.json: chứa những file đã cài
 models: Chứa mô hình database
+routes: Định nghĩa các giao thức điều hướng
 # Giải thích các file trong forder
 keytoken.model.js: lưu lại user, id user , public key, refresh tokens
 # Giải thích các keyword
@@ -19,8 +20,10 @@ npm i helmet --save-dev : Thư viện bảo mật restapi
 npm i compression --save-dev : nén các tệp tin trả về từ máy chủ trước khi chúng được gửi đến client. 
 npm i mongoose --save-dev
 npm install dotenv --save-dev
-
+npm install bcrypt --save-dev : mã hóa so sánh password
+npm install lodash --save-dev
+npm install jsonwebtoken --save-dev
 # Run server 
-node --watch server.js
+node --watch server.js : clean code response
 # Cú pháp viết tắt
 !dmbg
