@@ -20,8 +20,8 @@ const checkOverLoad = () => {
         // Example maxium number of connection based on number osf core
         const maxConnection = numCore * 5;
 
-        console.log(`Active connections: ${numConnection}`);
-        console.log(`Memory usage: ${memoryUsage / 1024 / 1024} MB`);
+        // console.log(`Active connections: ${numConnection}`);
+        // console.log(`Memory usage: ${memoryUsage / 1024 / 1024} MB`);
 
         if (numConnection > maxConnection) {
             console.log(

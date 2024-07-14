@@ -25,7 +25,7 @@ class AccessService {
         //Check email exist start
         const hodelShop = await shopModel.findOne({ email }).lean();
         if (hodelShop) {
-            throw new BadRequestError("Error: Shop already registered!");
+            throw new BadRequestError("Error: Shop already registered!", 400);
         }
         //Check email exist end
 
