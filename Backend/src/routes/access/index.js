@@ -9,7 +9,7 @@ const { authentication } = require("../../auth/authUtils");
 //signUp
 router.post("/shop/signup", asyncHandler(accessController.signUp));
 //Login
-// router.post("/shop/login", asyncHandler(accessController.login));
+router.post("/shop/login", asyncHandler(accessController.login));
 
 //Authentication
 // router.use(authentication);
