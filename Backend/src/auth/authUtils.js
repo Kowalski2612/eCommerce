@@ -60,7 +60,6 @@ const authentication = asyncHandler(async (req, res, next) => {
 
     try {
         const decodedUser = JWT.verify(accessToken, keyStore.publicKey);
-        console.log('decodedUser.userId ', decodedUser);
         if (userId !== decodedUser.userId)
             throw new AuthFailureError("Invalid UserID");
         req.keyStore = keyStore;
@@ -69,7 +68,7 @@ const authentication = asyncHandler(async (req, res, next) => {
         throw error;
     }
 });
-const vedifyJWT = async (token, keySecret) => {
+const verifyJWT = async (token, keySecret) => {
     return await JWT.verify(token, keySecret);
 };
-module.exports = { createTokenPair, authentication, vedifyJWT };
+module.exports = { createTokenPair, authentication, verifyJWT };

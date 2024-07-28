@@ -20,10 +20,64 @@ const RoleShop = {
     ADMIN: "ADMIN",
 };
 class AccessService {
+    // hàm này để biết user nguy hiểm có thể là hacker
+    static handlerRefreshToken = async (refreshToken) => {
+        const foundToken = await KeyTokenService.findKeyByRefreshTokenUser(
+            refreshToken
+        );
+
+        if (foundToken) {
+            //decord ra nguoi dung nguy hiem
+            const { userId, email } = await verifyJWT(
+                refreshToken,
+                foundToken.privateKey
+            );
+            console.log({ userId, email });
+            //xoa tat ca token trong keystore
+            await KeyTokenService.deleteKeyById(userId);
+            throw new ForbiddenError("SomeThing wrong happend !! Pls relogin");
+        }
+
+        //NO, qua ngon
+        const holderToken = await KeyTokenService.findKeyByRefreshToken(
+            refreshToken
+        );
+        if (!holderToken) throw new AuthFailureError("Shop not registred! 1");
+        console.log('4');
+        //verifyToken
+        const { userId, email } = await verifyJWT(
+            refreshToken,
+            holderToken.privateKey
+        );
+        console.log('3');
+        //Check userId
+        const foundShop = await findByEmail({ email });
+        if (!foundShop) throw new AuthFailureError("Shop not registred! 2");
+        console.log('1');
+        //create new token moi
+        const tokens = await createTokenPair(
+            { userId, email },
+            holderToken.publicKey,
+            holderToken.privateKey
+        );
+        console.log('2');
+        //update token
+        await holderToken.updateOne({
+            $set: {
+                refreshToken: tokens.refreshToken,
+            },
+            $addToSet: {
+                refreshTokenUsed: refreshToken,
+            },
+        });
+        return {
+            user: { userId, email },
+            tokens,
+        };
+    };
+
     static logout = async ({keyStore}) => {
-        console.log('keyStore' );
         const delKey = await KeyTokenService.removeKeyById(keyStore._id);
-        console.log({ delKey });
         return delKey;
     };
 
