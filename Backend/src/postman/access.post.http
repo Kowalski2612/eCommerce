@@ -2,12 +2,31 @@
 @url_dev=http://localhost:3052/v1/api
 
 ### signup
-POST {{url_dev}}/shop/signup
+# POST {{url_dev}}/shop/signup
+# Content-Type: application/json
+# x-api-key: bb2491334d24757397841d8f5a77b417bffa3f39920993a4e8f519ee06edb7f7493401f92e7661165feca7b0046e41a2d53b2123fb7a663e7f5ed5d1c251f69b
+
+# {
+#     "name": "shop name",
+#     "email": "test6@gmail.com",
+#     "password": "shop123"
+# }
+
+
+### login
+POST {{url_dev}}/shop/login
 Content-Type: application/json
 x-api-key: bb2491334d24757397841d8f5a77b417bffa3f39920993a4e8f519ee06edb7f7493401f92e7661165feca7b0046e41a2d53b2123fb7a663e7f5ed5d1c251f69b
 
 {
-    "name": "shop name",
-    "email": "test6@gmail.com",
+    "email": "test56@gmail.com",
     "password": "shop123"
 }
+
+### logout
+# POST {{url_dev}}/shop/logout
+# Content-Type: application/json
+# x-api-key: bb2491334d24757397841d8f5a77b417bffa3f39920993a4e8f519ee06edb7f7493401f92e7661165feca7b0046e41a2d53b2123fb7a663e7f5ed5d1c251f69b
+# x-client-id: userId
+# authorization: rftoken
+
