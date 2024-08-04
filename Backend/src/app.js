@@ -31,10 +31,11 @@ app.use((err, req, res, next) => {
 		error: {
 			status: 'error',
 			code: statusCode,
+			stack: err.stack,
 			message: err.message || "Internal Server Error",
 		}
 	})
 })
 // handling errors
-
+// stack log loi
 module.exports = app;

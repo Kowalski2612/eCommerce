@@ -21,6 +21,36 @@ const RoleShop = {
 };
 class AccessService {
     // hàm này để biết user nguy hiểm có thể là hacker
+    static handlerRefreshTokenV2 = async ({keyStore, user, refreshToken}) => {
+        const { userId, email } = user;  
+        
+        if (keyStore.refreshTokenUsed.includes(refreshToken)) {
+            await KeyTokenService.deleteKeyById(userId);
+            throw new ForbiddenError("SomeThing wrong happend !! Pls relogin");
+        }
+
+        if (keyStore.refreshToken !== refreshToken) throw new AuthFailureError("Shop not registred!");
+        const foundShop = await findByEmail({ email });
+        if (!foundShop) throw new AuthFailureError("Shop not registred! 2");
+        const tokens = await createTokenPair(
+            { userId, email },
+            keyStore.publicKey,
+            keyStore.privateKey
+        );
+        await keyStore.updateOne({
+            $set: {
+                refreshToken: tokens.refreshToken,
+            },
+            $addToSet: {
+                refreshTokenUsed: refreshToken,
+            },
+        });
+        return {
+            user,
+            tokens,
+        };
+    };
+
     static handlerRefreshToken = async (refreshToken) => {
         const foundToken = await KeyTokenService.findKeyByRefreshTokenUser(
             refreshToken
@@ -43,24 +73,20 @@ class AccessService {
             refreshToken
         );
         if (!holderToken) throw new AuthFailureError("Shop not registred! 1");
-        console.log('4');
         //verifyToken
         const { userId, email } = await verifyJWT(
             refreshToken,
             holderToken.privateKey
         );
-        console.log('3');
         //Check userId
         const foundShop = await findByEmail({ email });
         if (!foundShop) throw new AuthFailureError("Shop not registred! 2");
-        console.log('1');
         //create new token moi
         const tokens = await createTokenPair(
             { userId, email },
             holderToken.publicKey,
             holderToken.privateKey
         );
-        console.log('2');
         //update token
         await holderToken.updateOne({
             $set: {

@@ -40,7 +40,6 @@ class KeyTokenService {
     static findByUserId = async (userId) => {
         return await keytokenModel
             .findOne({ user: new ObjectId(userId) })
-            .lean();
     };
 
     static findKeyByRefreshTokenUser = async (refreshToken) => {
@@ -56,7 +55,7 @@ class KeyTokenService {
         return await keytokenModel.findOne({ refreshToken });
     };
     static deleteKeyById = async (userId) => {
-        return await findByIdAndDelete({ user: userId });
+        return await keytokenModel.deleteOne({ user: new mongoose.Types.ObjectId(userId) });
     };
 }
 
