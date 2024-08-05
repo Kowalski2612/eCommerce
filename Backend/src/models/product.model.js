@@ -67,6 +67,10 @@ const electronicSchema = new Schema(
         },
         model: String,
         color: String,
+        product_shop: {
+            type: Schema.Types.ObjectId,
+            ref: "Shop",
+        },
     },
     {
         collection: "electronics",
