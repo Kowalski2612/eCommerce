@@ -2,6 +2,7 @@
 
 const { product, clothing, electronic, furniture } = require('../models/product.model');
 const { BadRequestError } = require('../core/error.response');
+const { findAllDraftsForShop, publishProductByShop, findAllPublishForShop, unPublishProductByShop, searchProductByUser } = require('../models/repositories/product.repo');
 
 // Define factory class to create product
 class ProductFactory {
@@ -19,8 +20,34 @@ class ProductFactory {
 	static async createProduct(type, payload) {
         const productClass = ProductFactory.productRegistry[type];
         if (!productClass) throw new BadRequestError(`Invalid product type ${type}`);
+
         return new productClass(payload).createProduct();
 	}
+
+	// PUT
+	static async publishProductByShop({product_id, product_shop}) {
+		return await publishProductByShop({product_id, product_shop});
+	}
+
+	static async unPublishProductByShop({product_id, product_shop}) {
+		return await unPublishProductByShop({product_id, product_shop});
+	}
+	// END PUT
+
+	//query
+	static async findAllDraftsForShop({product_shop, limit = 50, skip = 0}) {
+		const query = { product_shop, isDraft: true };
+		return await findAllDraftsForShop({query, limit, skip});
+	}
+	static async findAllPublishForShop({product_shop, limit = 50, skip = 0}) {
+		const query = { product_shop, isPublished: true };
+		return await findAllPublishForShop({query, limit, skip});
+	}
+
+	static async getListSearchProduct({keySearch}) {
+		return await searchProductByUser({keySearch});
+	}
+	// END query
 }
 
 // Define base product class
@@ -59,7 +86,6 @@ class Clothing extends Product {
 // Define sub class for different product types electronics
 class Electronics extends Product {
 	async createProduct() {
-        console.log('this.product_attributes:: ', this.product_attributes);
 		const newElectronic = await electronic.create({
             ...this.product_attributes,
             product_shop: this.product_shop

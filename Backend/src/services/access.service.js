@@ -62,7 +62,6 @@ class AccessService {
                 refreshToken,
                 foundToken.privateKey
             );
-            console.log({ userId, email });
             //xoa tat ca token trong keystore
             await KeyTokenService.deleteKeyById(userId);
             throw new ForbiddenError("SomeThing wrong happend !! Pls relogin");

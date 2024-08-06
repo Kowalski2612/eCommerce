@@ -1,7 +1,7 @@
 "use strict";
 
-const { model, Schema } = require("mongoose");
-
+const { model, Schema, set } = require("mongoose");
+const slugify = require("slugify");
 const DOCUMENT_NAME = "Product";
 const COLLECTION_NAME = "Products";
 
@@ -16,6 +16,7 @@ var productSchema = new Schema(
             required: true,
         },
         product_description: String,
+        product_slug: String,
         product_price: {
             type: Number,
             required: true,
@@ -37,12 +38,46 @@ var productSchema = new Schema(
             type: Schema.Types.Mixed,
             required: true,
         },
+        //more
+        product_ratingsAverage: {
+            type: Number,
+            default: 4.5,
+            min: [1, "Rating must be above 1.0"],
+            max: [5, "Rating must be below 5.0"],
+            set: (val) => Math.round(val * 10) / 10,
+        },
+        product_variations: {
+            type: Array,
+            default: [],
+        },
+        // select: false will not return this field in the response
+        isDraft: {
+            type: Boolean,
+            default: true,
+            index: true,
+            select: false,
+        },
+        isPublished: {
+            type: Boolean,
+            default: false,
+            index: true,
+            select: false,
+        }
     },
     {
         timestamps: true,
         collection: COLLECTION_NAME,
     }
 );
+
+// Indexes for searching
+productSchema.index({ product_name: 'text', product_description: 'text' });
+
+// Webhub Document middleware: runs before .save() and .create()... 
+productSchema.pre("save", function (next) {
+    this.product_slug = slugify(this.product_name, { lower: true });
+    next();
+});
 
 const clothingSchema = new Schema(
     {
@@ -59,7 +94,7 @@ const clothingSchema = new Schema(
     },
     {
         collection: "clothes",
-        timeseries: true,
+        timestamps: true,
     }
 );
 
@@ -78,7 +113,7 @@ const electronicSchema = new Schema(
     },
     {
         collection: "electronics",
-        timeseries: true,
+        timestamps: true,
     }
 );
 
@@ -98,7 +133,7 @@ const furnitureSchema = new Schema(
     },
     {
         collection: "furnitures",
-        timeseries: true,
+        timestamps: true,
     }
 );
 

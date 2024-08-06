@@ -23,6 +23,7 @@ npm install dotenv --save-dev
 npm install bcrypt --save-dev : mã hóa so sánh password
 npm install lodash --save-dev
 npm install jsonwebtoken --save-dev
+npm i slugify --save 
 # Run server 
 node --watch server.js : clean code response
 # Cú pháp viết tắt
