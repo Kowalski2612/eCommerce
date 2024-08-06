@@ -20,7 +20,8 @@ class ProductController {
         new SuccessResponse({
             message: "Create new product success",
             metadata: await ProductServiceV2.createProduct(
-                req.body.product_type, {
+                req.body.product_type,
+                {
                     ...req.body,
                     product_shop: req.user.userId,
                 }
@@ -46,13 +47,13 @@ class ProductController {
                 product_shop: req.user.userId,
             }),
         }).send(res);
-    }
+    };
     // QUERY
     /**
      * @desc Get all drafts for shop
-     * @param {Number} limit 
-     * @param {Number} skip 
-     * @return {JSON}  
+     * @param {Number} limit
+     * @param {Number} skip
+     * @return {JSON}
      */
     getAllDraftsForShop = async (req, res, next) => {
         new SuccessResponse({
@@ -61,7 +62,7 @@ class ProductController {
                 product_shop: req.user.userId,
             }),
         }).send(res);
-    }
+    };
 
     getAllPublishForShop = async (req, res, next) => {
         new SuccessResponse({
@@ -70,16 +71,30 @@ class ProductController {
                 product_shop: req.user.userId,
             }),
         }).send(res);
-    }
+    };
 
     getListSearchProduct = async (req, res, next) => {
         new SuccessResponse({
             message: "Get all drafts for shop success",
-            metadata: await ProductServiceV2.getListSearchProduct(
-               req.params 
-            ),
+            metadata: await ProductServiceV2.getListSearchProduct(req.params),
         }).send(res);
-    }
+    };
+
+    findAllProducts = async (req, res, next) => {
+        new SuccessResponse({
+            message: "Get find all product for shop success",
+            metadata: await ProductServiceV2.findAllProducts(req.query),
+        }).send(res);
+    };
+
+    findProduct = async (req, res, next) => {
+        new SuccessResponse({
+            message: "Get find all product for shop success",
+            metadata: await ProductServiceV2.findProduct({
+                product_id: req.params.product_id,
+            }),
+        }).send(res);
+    };
     // END QUERY
 }
 
