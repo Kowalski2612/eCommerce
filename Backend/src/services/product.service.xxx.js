@@ -15,7 +15,10 @@ const {
     searchProductByUser,
     findAllProducts,
     findProduct,
+    updateProductById,
 } = require("../models/repositories/product.repo");
+const { model } = require("mongoose");
+const { remoteUndefinedObject, updateNestedObjectParser } = require("../utils");
 
 // Define factory class to create product
 class ProductFactory {
@@ -36,6 +39,12 @@ class ProductFactory {
             throw new BadRequestError(`Invalid product type ${type}`);
 
         return new productClass(payload).createProduct();
+    }
+
+    static async updateProduct(type, productId, payload) {
+        const productClass = ProductFactory.productRegistry[type];
+        if (!productClass) throw new BadRequestError(`Invalid product type ${type}`);
+        return new productClass(payload).updateProduct(productId);
     }
 
     // PUT
@@ -111,18 +120,39 @@ class Product {
     async createProduct(product_id) {
         return await product.create({ ...this, _id: product_id });
     }
+
+    // update product
+    async updateProduct(product_id, bodyUpdate) {
+        return await updateProductById({product_id, bodyUpdate, model: product});
+    }
 }
 
 // Define sub class for different product types clothing
 class Clothing extends Product {
     async createProduct() {
-        const newClothing = await clothing.create(this.product_attributes);
+        const newClothing = await clothing.create({
+            ...this.product_attributes,
+            product_shop: this.product_shop,
+        });
         if (!newClothing)
             throw new BadRequestError("Cannot create new clothing");
 
         const newProduct = await super.createProduct();
         if (!newProduct) throw new BadRequestError("Cannot create new product");
         return newProduct;
+    }
+    async updateProduct(productId) {
+        //1. Remove attribute has null undefined
+        //2. Check update o cho nao
+        console.log("this: ", this);
+        const objectParams = remoteUndefinedObject(this);
+        console.log("objectParams: ", objectParams);
+        if (objectParams.product_attributes) {
+            //Update child product
+            await updateProductById({productId, bodyUpdate: updateNestedObjectParser(objectParams.product_attributes), model: clothing});
+        }
+        const updatedProduct = await super.updateProduct(productId, updateNestedObjectParser(objectParams));
+        return updatedProduct;
     }
 }
 
