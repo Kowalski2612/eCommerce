@@ -19,6 +19,7 @@ const {
 } = require("../models/repositories/product.repo");
 const { model } = require("mongoose");
 const { remoteUndefinedObject, updateNestedObjectParser } = require("../utils");
+const { insertInventory } = require("../models/repositories/Inventory.repo");
 
 // Define factory class to create product
 class ProductFactory {
@@ -118,12 +119,25 @@ class Product {
     }
     // create new product
     async createProduct(product_id) {
-        return await product.create({ ...this, _id: product_id });
+        const newProduct = await product.create({ ...this, _id: product_id });
+        if (newProduct) {
+            console.log("newProduct: ", newProduct);
+            await insertInventory({
+                productId: newProduct._id,
+                shopId: this.product_shop,
+                stock: this.product_quantity,
+            });
+        }
+        return newProduct;
     }
 
     // update product
     async updateProduct(product_id, bodyUpdate) {
-        return await updateProductById({product_id, bodyUpdate, model: product});
+        return await updateProductById({
+            product_id,
+            bodyUpdate,
+            model: product,
+        });
     }
 }
 
@@ -149,9 +163,18 @@ class Clothing extends Product {
         console.log("objectParams: ", objectParams);
         if (objectParams.product_attributes) {
             //Update child product
-            await updateProductById({productId, bodyUpdate: updateNestedObjectParser(objectParams.product_attributes), model: clothing});
+            await updateProductById({
+                productId,
+                bodyUpdate: updateNestedObjectParser(
+                    objectParams.product_attributes
+                ),
+                model: clothing,
+            });
         }
-        const updatedProduct = await super.updateProduct(productId, updateNestedObjectParser(objectParams));
+        const updatedProduct = await super.updateProduct(
+            productId,
+            updateNestedObjectParser(objectParams)
+        );
         return updatedProduct;
     }
 }
