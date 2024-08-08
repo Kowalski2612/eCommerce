@@ -1,6 +1,10 @@
 "use strict";
 
 const _ = require("lodash");
+const { Types } = require("mongoose");
+
+// Chuyen tu string sang ObjectId
+const convertToObjectIdMongodb = (id) => Types.ObjectId(id);
 
 const getIntoData = ({ fileds = [], object = {} }) => {
     return _.pick(object, fileds);
@@ -34,25 +38,26 @@ const remoteUndefinedObject = (obj) => {
     db.conllection.updateOne({ c.d: 1 }, { c.e: 2 });
 */
 
-const updateNestedObjectParser = obj => {
+const updateNestedObjectParser = (obj) => {
     const final = {};
-    Object.keys(obj).forEach(key => {
-        if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+    Object.keys(obj).forEach((key) => {
+        if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
             const response = updateNestedObjectParser(obj[key]);
-            Object.keys(response).forEach(subKey => {
+            Object.keys(response).forEach((subKey) => {
                 final[`${key}.${subKey}`] = response[subKey];
             });
         } else {
-            final[key] = obj[key];  
+            final[key] = obj[key];
         }
     });
     return final;
-}
+};
 
 module.exports = {
     getIntoData,
     getSelectData,
     unGetSelectData,
     remoteUndefinedObject,
-    updateNestedObjectParser
+    updateNestedObjectParser,
+    convertToObjectIdMongodb,
 };
