@@ -3,7 +3,7 @@
 const mongoose = require("mongoose"); // Erase if already required
 const { model, Schema } = require("mongoose");
 
-const DOCUMENT_NAME = "Discount";
+const DOCUMENT_NAME = "discount";
 const COLLECTION_NAME = "discounts";
 // Declare the Schema of the Mongo model
 var discountSchema = new mongoose.Schema(
@@ -45,11 +45,6 @@ var discountSchema = new mongoose.Schema(
             required: true,
         },
         discount_max_value: {
-            type: Number,
-            required: true,
-        },
-        // Moi nguoi dung duoc so luong discount
-        discount_uses: {
             type: Number,
             required: true,
         },
@@ -98,6 +93,4 @@ var discountSchema = new mongoose.Schema(
 );
 
 //Export the model
-module.exports = {
-    inventory: model(DOCUMENT_NAME, discountSchema),
-};
+module.exports = model(DOCUMENT_NAME, discountSchema);
