@@ -47,7 +47,7 @@ class CartService {
             return await CartService.createUserCard({ userId, product });
         }
         // neu co gio hang roi nhung chua co san pham
-        if (!userCart.cart_count_product.length) {
+        if (!userCart.cart_products.length) {
             userCart.cart_products = [product];
             return await userCart.save();
         }
@@ -113,7 +113,7 @@ class CartService {
     static async getListUserCard({ userId }) {
         return await cart
             .findOne({
-                cart_userId: userId,
+                cart_userId: +userId,
             })
             .lean();
     }

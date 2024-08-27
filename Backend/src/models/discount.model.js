@@ -44,17 +44,13 @@ var discountSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        discount_max_value: {
-            type: Number,
-            required: true,
-        },
-        //Ai da su dung
-        discount_users_used: {
+         // So luong discount dung da su dung
+        discount_users_count: {
             type: Array,
             default: [],
         },
-        // So luong discount dung da su dung
-        discount_users_count: {
+        //Ai da su dung
+        discount_users_used: {
             type: Array,
             default: [],
         },
@@ -93,4 +89,6 @@ var discountSchema = new mongoose.Schema(
 );
 
 //Export the model
-module.exports = model(DOCUMENT_NAME, discountSchema);
+module.exports = {
+    discount: model(DOCUMENT_NAME, discountSchema),
+};

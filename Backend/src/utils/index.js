@@ -4,7 +4,7 @@ const _ = require("lodash");
 const { Types } = require("mongoose");
 
 // Chuyen tu string sang ObjectId
-// const convertToObjectIdMongodb = (id) => new Types.ObjectId(id);
+// const convertToObjectIdMongodb = id => new Types.ObjectId(id);
 const convertToObjectIdMongodb = (id) => {
     const objectId = new Types.ObjectId(id);
     return objectId;

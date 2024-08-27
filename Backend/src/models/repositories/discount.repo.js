@@ -11,7 +11,7 @@ const findAllDiscountCodesUnSelect = async ({
     model,
 }) => {
     const skip = (page - 1) * limit;
-    const sortBy = sort === "ctime" ? { _id: -1 } : { _id: -1 };
+    const sortBy = sort === "ctime" ? { _id: -1 } : { _id: 1 };
     const documents = await model
         .find(filter)
         .sort(sortBy)
@@ -31,7 +31,7 @@ const findAllDiscountCodesSelect = async ({
     model,
 }) => {
     const skip = (page - 1) * limit;
-    const sortBy = sort === "ctime" ? { _id: -1 } : { _id: -1 };
+    const sortBy = sort === "ctime" ? { _id: -1 } : { _id: 1 };
     const documents = await model
         .find(filter)
         .sort(sortBy)
@@ -42,7 +42,7 @@ const findAllDiscountCodesSelect = async ({
     return documents;
 };
 
-const checkDiscountExists = async (model, filter) => {
+const checkDiscountExists = async ({model, filter}) => {
     return await model.findOne(filter).lean(); 
 }
 

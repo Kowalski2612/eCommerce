@@ -28,3 +28,10 @@ npm i slugify --save
 node --watch server.js : clean code response
 # Cú pháp viết tắt
 !dmbg
+
+# Cu phap docker
+docker search kafka : Tìm kiếm phiên bản tốt
+docker pull bitnami/kafka
+docker ps -a
+docker network create kafka-network : tạo mạng để giao tiếp trong container
+2492f64be6b29937127b9bff6e272f18cd954fae12edf4248334d836e289a6ed

@@ -61,11 +61,7 @@ const unPublishProductByShop = async ({ product_shop, product_id }) => {
 
 const findAllProducts = async ({ limit, sort, page, filter, select }) => {
     const skip = (page - 1) * limit;
-    const sortBy = sort === "ctime" ? { _id: -1 } : { _id: -1 };
-    console.log("Filter:", filter);
-    console.log("Sort By:", sortBy);
-    console.log("Skip:", skip, "Limit:", limit);
-    console.log("Select:", getSelectData(select));
+    const sortBy = sort === "ctime" ? { _id: -1 } : { _id: 1 };
     const products = await product
         .find(filter)
         .sort(sortBy)
@@ -73,7 +69,6 @@ const findAllProducts = async ({ limit, sort, page, filter, select }) => {
         .limit(limit)
         .select(getSelectData(select))
         .lean();
-
     return products;
 };
 
@@ -110,6 +105,19 @@ const getProductById = async (product_id) => {
     return product.findOne({ _id: convertToObjectIdMongodb(product_id)}).lean();
 };
 
+const checkProductByService = async (products) => {
+    return await Promise.all(products.map(async product => {
+        const foundProduct = await getProductById(product.productId)
+        if (foundProduct) {
+            return {
+                price: foundProduct.product_price,
+                quantity: product.quantity,
+                productId: product.productId
+            }
+        }
+    }))
+}
+
 module.exports = {
     findAllDraftsForShop,
     publishProductByShop,
@@ -120,4 +128,5 @@ module.exports = {
     findProduct,
     updateProductById,
     getProductById,
+    checkProductByService
 };
